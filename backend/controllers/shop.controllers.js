@@ -42,18 +42,78 @@ export const getMyShop=async (req,res) => {
     }
 }
 
-export const getShopByCity=async (req,res) => {
-    try {
-        const {city}=req.params
+// export const getShopByCity=async (req,res) => {
+//     try {
+//         const {city}=req.params;
+//         console.log("city id lijiye",city);
+//         // const shops = await Shop.findById(shopId).populate('items');
+//         // console.log("shops lijiye",shops);
+//         const cleanCity = city.split("(")[0].trim()
 
-        const shops=await Shop.find({
-            city:{$regex:new RegExp(`^${city}$`, "i")}
-        }).populate('items')
-        if(!shops){
-            return res.status(400).json({message:"shops not found"})
-        }
-        return res.status(200).json(shops)
-    } catch (error) {
-        return res.status(500).json({message:`get shop by city error ${error}`})
+//         const shops=await Shop.find({
+//             city:{ $regex: cleanCity, $options: "i" }
+//         }).populate('items')
+//         console.log("cityyyyy0",city);
+//         if(!shops){
+//             return res.status(400).json({message:"shops not found"})
+//         }
+//         return res.status(200).json(shops)
+//     } catch (error) {
+//         return res.status(500).json({message:`get shop by city error ${error}`})
+//     }
+// }
+
+// export const getShopByCity = async (req, res) => {
+//   try {
+//     const { lat, lon } = req.query
+
+//     if (!lat || !lon) {
+//       return res.status(400).json({ message: "lat/lon required" })
+//     }
+
+//     const shops = await Shop.find({
+//       location: {
+//         $near: {
+//           $geometry: {
+//             type: "Point",
+//             coordinates: [Number(lon), Number(lat)] // ⚠️ [lon, lat]
+//           },
+//           $maxDistance: 5000 // 5km radius
+//         }
+//       }
+//     }).populate("items")
+
+//     if (shops.length === 0) {
+//       return res.status(404).json({ message: "No shops found nearby" })
+//     }
+
+//     return res.status(200).json(shops)
+
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `get nearby shops error ${error}`
+//     })
+//   }
+// }
+export const getShopByCity = async (req, res) => {
+  try {
+    const { city } = req.params
+
+    const cleanCity = city.split("(")[0].trim()
+
+    const shops = await Shop.find({
+      city: { $regex: cleanCity, $options: "i" }
+    }).populate("items")
+
+    if (shops.length === 0) {
+      return res.status(404).json({ message: "No shops found" })
     }
+
+    return res.status(200).json(shops)
+
+  } catch (error) {
+    return res.status(500).json({
+      message: `get shop by city error ${error}`
+    })
+  }
 }

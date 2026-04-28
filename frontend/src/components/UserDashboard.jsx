@@ -36,7 +36,7 @@ setUpdatedItemsList(itemsInMyCity)
 },[itemsInMyCity])
 
 
-  const updateButton=(ref,setLeftButton,setRightButton)=>{
+const updateButton=(ref,setLeftButton,setRightButton)=>{
 const element=ref.current
 if(element){
 setLeftButton(element.scrollLeft>0)
@@ -52,9 +52,6 @@ setRightButton(element.scrollLeft+element.clientWidth<element.scrollWidth)
       })
     }
   }
-
-
-
 
   useEffect(()=>{
     if(cateScrollRef.current){

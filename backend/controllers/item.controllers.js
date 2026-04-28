@@ -96,8 +96,9 @@ export const getItemByCity = async (req, res) => {
         if (!city) {
             return res.status(400).json({ message: "city is required" })
         }
+        const cleanCity = city.split("(")[0].trim()
         const shops = await Shop.find({
-            city: { $regex: new RegExp(`^${city}$`, "i") }
+            city: { $regex: cleanCity, $options: "i" }
         }).populate('items')
         if (!shops) {
             return res.status(400).json({ message: "shops not found" })
@@ -130,11 +131,15 @@ export const getItemsByShop=async (req,res) => {
 export const searchItems=async (req,res) => {
     try {
         const {query,city}=req.query
+        console.log("lijiye ji aapka queryy", query);
+        console.log("lijiye ji aapka seracgItema ka backend ka city",city);
         if(!query || !city){
-            return null
+            return res.status(400).json({ message: "Query and city required" });
         }
+        const cleanCity = city.split("(")[0].trim();
+        console.log("lijiye searchItems ka clean city", cleanCity);
         const shops=await Shop.find({
-            city:{$regex:new RegExp(`^${city}$`, "i")}
+            city:{ $regex: cleanCity, $options: "i" }
         }).populate('items')
         if(!shops){
             return res.status(400).json({message:"shops not found"})

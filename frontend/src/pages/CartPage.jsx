@@ -1,4 +1,3 @@
-import React from 'react'
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

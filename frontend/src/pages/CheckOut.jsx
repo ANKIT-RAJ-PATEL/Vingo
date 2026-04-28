@@ -13,7 +13,7 @@ import axios from 'axios';
 import { FaMobileScreenButton } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import { serverUrl } from '../App';
-import { addMyOrder, setTotalAmount } from '../redux/userSlice';
+import { addMyOrder } from '../redux/userSlice';
 function RecenterMap({ location }) {
   if (location.lat && location.lon) {
     const map = useMap()
@@ -103,24 +103,24 @@ function CheckOut() {
 const openRazorpayWindow=(orderId,razorOrder)=>{
 
   const options={
- key:import.meta.env.VITE_RAZORPAY_KEY_ID,
- amount:razorOrder.amount,
- currency:'INR',
- name:"Vingo",
- description:"Food Delivery Website",
- order_id:razorOrder.id,
- handler:async function (response) {
-  try {
-    const result=await axios.post(`${serverUrl}/api/order/verify-payment`,{
-      razorpay_payment_id:response.razorpay_payment_id,
-      orderId
-    },{withCredentials:true})
-        dispatch(addMyOrder(result.data))
-      navigate("/order-placed")
-  } catch (error) {
-    console.log(error)
-  }
- }
+    key:import.meta.env.VITE_RAZORPAY_KEY_ID,
+    amount:razorOrder.amount,
+    currency:'INR',
+    name:"Vingo",
+    description:"Food Delivery Website",
+    order_id:razorOrder.id,
+    handler:async function (response) {
+      try {
+        const result=await axios.post(`${serverUrl}/api/order/verify-payment`,{
+          razorpay_payment_id:response.razorpay_payment_id,
+          orderId
+        },{withCredentials:true})
+            dispatch(addMyOrder(result.data))
+          navigate("/order-placed")
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   const rzp=new window.Razorpay(options)
@@ -202,28 +202,28 @@ const openRazorpayWindow=(orderId,razorOrder)=>{
 
         <section>
           <h2 className='text-lg font-semibold mb-3 text-gray-800'>Order Summary</h2>
-<div className='rounded-xl border bg-gray-50 p-4 space-y-2'>
-{cartItems.map((item,index)=>(
-  <div key={index} className='flex justify-between text-sm text-gray-700'>
-<span>{item.name} x {item.quantity}</span>
-<span>₹{item.price*item.quantity}</span>
-  </div>
- 
-))}
- <hr className='border-gray-200 my-2'/>
-<div className='flex justify-between font-medium text-gray-800'>
-  <span>Subtotal</span>
-  <span>{totalAmount}</span>
-</div>
-<div className='flex justify-between text-gray-700'>
-  <span>Delivery Fee</span>
-  <span>{deliveryFee==0?"Free":deliveryFee}</span>
-</div>
-<div className='flex justify-between text-lg font-bold text-[#ff4d2d] pt-2'>
-    <span>Total</span>
-  <span>{AmountWithDeliveryFee}</span>
-</div>
-</div>
+          <div className='rounded-xl border bg-gray-50 p-4 space-y-2'>
+          {cartItems.map((item,index)=>(
+            <div key={index} className='flex justify-between text-sm text-gray-700'>
+          <span>{item.name} x {item.quantity}</span>
+          <span>₹{item.price*item.quantity}</span>
+            </div>
+          
+          ))}
+          <hr className='border-gray-200 my-2'/>
+          <div className='flex justify-between font-medium text-gray-800'>
+            <span>Subtotal</span>
+            <span>{totalAmount}</span>
+          </div>
+          <div className='flex justify-between text-gray-700'>
+            <span>Delivery Fee</span>
+            <span>{deliveryFee==0?"Free":deliveryFee}</span>
+          </div>
+          <div className='flex justify-between text-lg font-bold text-[#ff4d2d] pt-2'>
+              <span>Total</span>
+            <span>{AmountWithDeliveryFee}</span>
+          </div>
+          </div>
         </section>
         <button className='w-full bg-[#ff4d2d] hover:bg-[#e64526] text-white py-3 rounded-xl font-semibold' onClick={handlePlaceOrder}> {paymentMethod=="cod"?"Place Order":"Pay & Place Order"}</button>
 

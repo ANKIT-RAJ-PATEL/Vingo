@@ -41,24 +41,119 @@ function SignUp() {
         }
      }
 
-     const handleGoogleAuth=async () => {
-        if(!mobile){
-          return setErr("mobile no is required")
-        }
-        const provider=new GoogleAuthProvider()
-        const result=await signInWithPopup(auth,provider)
-  try {
-    const {data}=await axios.post(`${serverUrl}/api/auth/google-auth`,{
-        fullName:result.user.displayName,
-        email:result.user.email,
-        role,
-        mobile
-    },{withCredentials:true})
-   dispatch(setUserData(data))
-  } catch (error) {
-    console.log(error)
-  }
-     }
+
+const handleGoogleAuth = async () => {
+    if (!mobile) {
+        setErr("Mobile number is required");
+        return;
+    }
+
+    try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+
+        const user = result.user;
+
+        console.log("Google User:", user);
+
+        const { data } = await axios.post(
+            `${serverUrl}/api/auth/google-auth`,
+            {
+                fullName: user.displayName || "User",
+                email: user.email,
+                role: role || "user",
+                mobile: mobile || "0000000000",
+                photo: user.photoURL || ""
+            },
+            { withCredentials: true }
+        );
+
+        console.log("Backend Response:", data);
+
+        dispatch(setUserData(data));
+
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        setErr(error.message);
+    }
+};
+
+//      const handleGoogleAuth = async () => {
+//     if (!mobile) {
+//         setErr("Mobile number is required");
+//         return;
+//     }
+
+//     const provider = new GoogleAuthProvider();
+
+//     try {
+//         // ✅ result SAME scope me use ho raha
+//         const result = await signInWithPopup(auth, provider);
+
+//         console.log("USER:", result.user);
+
+//         const { data } = await axios.post(
+//             `${serverUrl}/api/auth/google-auth`,
+//             {
+//                 fullName: result.user.displayName,
+//                 email: result.user.email,
+//                 role,
+//                 mobile,
+//             },
+//             { withCredentials: true }
+//         );
+
+//         console.log("data",data)
+//         dispatch(setUserData(data));
+
+//     } catch (error) {
+//         console.error("ERROR:", error);
+//         setErr("Google signup failed");
+//     }
+// };
+
+//   const handleGoogleAuth = async () => {
+//     if (!mobile) {
+//         setErr("Mobile number is required");
+//         return;
+//     }
+
+//     const provider = new GoogleAuthProvider();
+
+//     let result;
+
+//     // 🔹 Step 1: Google Sign-In
+//     try {
+//         result = await signInWithPopup(auth, provider);
+//         console.log("Google User:", result.user);
+//     } catch (err) {
+//         console.error("Google auth error:", err);
+//         setErr("Google login failed");
+//         return;
+//     }
+
+//     // 🔹 Step 2: Send data to backend
+//     try {
+//         const { data } = await axios.post(
+//             `${serverUrl}/api/auth/google-auth`,
+//             {
+//                 fullName: result.user.displayName,
+//                 email: result.user.email,
+//                 role,
+//                 mobile,
+//                 photo: result.user.photoURL, // optional (useful)
+//             },
+//             { withCredentials: true }
+//         );
+
+//         console.log("Backend Response:", data);
+
+//         dispatch(setUserData(data));
+//     } catch (error) {
+//         console.error("Backend error:", error?.response?.data || error.message);
+//         setErr("Signup failed. Try again.");
+//     }
+// };
     return (
         <div className='min-h-screen w-full flex items-center justify-center p-4' style={{ backgroundColor: bgColor }}>
             <div className={`bg-white rounded-xl shadow-lg w-full max-w-md p-8 border-[1px] `} style={{
@@ -72,13 +167,15 @@ function SignUp() {
 
                 <div className='mb-4'>
                     <label htmlFor="fullName" className='block text-gray-700 font-medium mb-1'>Full Name</label>
-                    <input type="text" className='w-full border rounded-lg px-3 py-2 focus:outline-none ' placeholder='Enter your Full Name' style={{ border: `1px solid ${borderColor}` }} onChange={(e)=>setFullName(e.target.value)} value={fullName} required/>
+                    <input type="text" className='w-full border rounded-lg px-3 py-2 focus:outline-none ' placeholder='Enter your Full Name' 
+                        style={{ border: `1px solid ${borderColor}` }} onChange={(e)=>setFullName(e.target.value)} value={fullName} required/>
                 </div>
                 {/* email */}
 
                 <div className='mb-4'>
                     <label htmlFor="email" className='block text-gray-700 font-medium mb-1'>Email</label>
-                    <input type="email" className='w-full border rounded-lg px-3 py-2 focus:outline-none ' placeholder='Enter your Email' style={{ border: `1px solid ${borderColor}` }} onChange={(e)=>setEmail(e.target.value)} value={email} required/>
+                    <input type="email" className='w-full border rounded-lg px-3 py-2 focus:outline-none ' 
+                    placeholder='Enter your Email' style={{ border: `1px solid ${borderColor}` }} onChange={(e)=>setEmail(e.target.value)} value={email} required/>
                 </div>
                 {/* mobile*/}
 
@@ -101,31 +198,33 @@ function SignUp() {
                 <div className='mb-4'>
                     <label htmlFor="role" className='block text-gray-700 font-medium mb-1'>Role</label>
                     <div className='flex gap-2'>
-                        {["user", "owner", "deliveryBoy"].map((r) => (
+                        {["user", "owner", "deliveryBoy"].map((ragini) => (
                             <button
                                 className='flex-1 border rounded-lg px-3 py-2 text-center font-medium transition-colors cursor-pointer'
-                                onClick={()=>setRole(r)}
+                                onClick={()=>setRole(ragini)}
                                 style={
-                                   role==r?
+                                   role==ragini?
                                    {backgroundColor:primaryColor,color:"white"}
                                    :{border:`1px solid ${primaryColor}`,color:primaryColor}
                                 }>
-                                {r}
+                                {ragini}
                             </button>
                         ))}
                     </div>
                 </div>
 
-            <button className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d] text-white hover:bg-[#e64323] cursor-pointer`} onClick={handleSignUp} disabled={loading}>
+            <button className={`w-full font-semibold py-2 rounded-lg transition duration-200 bg-[#ff4d2d]
+             text-white hover:bg-[#e64323] cursor-pointer`} onClick={handleSignUp} disabled={loading}>
                 {loading?<ClipLoader size={20} color='white'/>:"Sign Up"}
             
             </button>
             {err && <p className='text-red-500 text-center my-[10px]'>*{err}</p>}
             
 
-            <button className='w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition cursor-pointer duration-200 border-gray-400 hover:bg-gray-100' onClick={handleGoogleAuth}>
-<FcGoogle size={20}/>
-<span>Sign up with Google</span>
+            <button className='w-full mt-4 flex items-center justify-center gap-2 border rounded-lg px-4 py-2 transition cursor-pointer 
+            duration-200 border-gray-400 hover:bg-gray-100' onClick={handleGoogleAuth}>
+            <FcGoogle size={20}/>
+            <span>Sign up with Google</span>
             </button>
             <p className='text-center mt-6 cursor-pointer' onClick={()=>navigate("/signin")}>Already have an account ?  <span className='text-[#ff4d2d]'>Sign In</span></p>
             </div>

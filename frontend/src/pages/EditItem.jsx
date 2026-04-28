@@ -36,7 +36,8 @@ function EditItem() {
     const handleImage = (e) => {
         const file = e.target.files[0]
         setBackendImage(file)
-        setFrontendImage(URL.createObjectURL(file))
+        // setFrontendImage(URL.createObjectURL(file)).
+        setFrontendImage(file)
     }
 
     const handleSubmit = async (e) => {

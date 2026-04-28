@@ -25,6 +25,8 @@ export const updateUserLocation=async (req,res) => {
                 coordinates:[lon,lat]
             }
         },{new:true})
+        console.log("BODY:", req.body)
+        console.log("USER ID:", req.userId)
          if(!user){
                return res.status(400).json({message:"user is not found"})
         }

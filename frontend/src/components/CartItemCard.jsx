@@ -1,4 +1,3 @@
-import React from 'react'
 import { FaMinus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { CiTrash } from "react-icons/ci";

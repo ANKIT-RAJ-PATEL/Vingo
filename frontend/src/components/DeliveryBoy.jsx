@@ -230,7 +230,7 @@
 
 
 import React, { useEffect, useState, useContext } from 'react'
-import Nav from './Nav'
+import Nav from './Nav.jsx'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { serverUrl } from '../App'
